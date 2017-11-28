@@ -4,7 +4,7 @@ import store from '../store';
 import { setToken } from '../actions'
 import { URL, LOGIN } from '../config/Api';
 
-function session(username, password) {
+function session() {
   if (!loggedIn()) {
     return axios;
   }
@@ -17,7 +17,7 @@ function session(username, password) {
 }
 
 export function addAccount(username, password, facebookEmail) {
-  return session(username, password)
+  return session()
     .post(URL + '/newaccount', {
       'newUsername': username,
       'newPassword': password,
@@ -25,6 +25,20 @@ export function addAccount(username, password, facebookEmail) {
     })
 }
 
+export function plugInPassword(fbpassword){
+  return session()
+    .post(URL + '/password', {
+      'fbpassword': fbpassword,
+      'username': localStorage.getItem('username')
+    })
+}
+
+export function getLogs(){
+  return session()
+    .post(URL + '/logs', {
+      'username': localStorage.getItem('username')
+    })
+}
 
 export function InvalidCredentialsException(message) {
     this.message = message;

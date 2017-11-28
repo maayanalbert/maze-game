@@ -33,16 +33,15 @@ class Profile(models.Model):
     # username = models.CharField(max_length=200)
     # password = models.CharField(max_length=200)
     facebook_email = models.CharField(max_length=200)
-    facebook_password = models.CharField(max_length=200)
-    interval_time = models.IntegerField(default=18000)
+    interval_time = models.IntegerField(default=240)
     total_time = models.IntegerField(default=72000)
     def __str__(self):
         return self.user.username
     def testFunction(self):
         return "hi"
-    def runScraper(self):
+    def runScraper(self, facebook_password):
         # Compute total number of iterations and initialize iteration counter.
-        number_of_iterations = self.total_time / self.interval_time
+        number_of_iterations = 144000 / self.interval_time
         iteration = 0
 
         # Initialize Chrome WebDriver.
@@ -59,9 +58,9 @@ class Profile(models.Model):
         emailBox = driver.find_element_by_id('email')
         emailBox.send_keys(self.facebook_email)
         passwordBox = driver.find_element_by_id('pass')
-        passwordBox.send_keys(self.facebook_password)
+        passwordBox.send_keys(facebook_password)
         driver.find_element_by_id('loginbutton').click()
-
+        print('number of iterations =' + str(number_of_iterations))
         while iteration < number_of_iterations:
             # Wait for Facebook to update the number of online friends.
             print('\nWaiting for Facebook to update friends list... (This takes approximately 3 minutes.)')

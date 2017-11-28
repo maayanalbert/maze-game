@@ -30,7 +30,34 @@ def create_account(request):
     return Response({'Account has been added'})
 
 
+@api_view(['GET','POST'])
+def start_tracking(request):
+    info = request.data
+    print(info)
+    username = info['username']
+    fbpassword = info['fbpassword']
+    user = User.objects.get(username = username)
+    userID = user.id
+    profile = Profile.objects.get(user_id = userID)
+    profile.runScraper(fbpassword)
+    return Response({'Started Tracking'})
 
+@api_view(['GET','POST'])
+def get_logs(request):
+    info = request.data
+    print(info)
+    username = info['username']
+    user = User.objects.get(username = username)
+    userID = user.id
+    profile = Profile.objects.get(user_id = userID)
+    allLogs = profile.log_set.all()
+    output = ()
+    for currentLog in allLogs:
+        currentLogTime = currentLog.log_time
+        currentLogFriends = currentLog.friends_online
+        output += (currentLogTime, currentLogFriends)
+
+    return Response({output})
 
 # def LoginPage(request):
 #     username = request.POST.get('username')

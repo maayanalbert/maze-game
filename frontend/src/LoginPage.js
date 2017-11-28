@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 import { login, getData } from './util/Auth.js';
 import store from './store';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+
+const style = {
+  margin: 12,
+};
 
 export class LoginPage extends Component{
   constructor(props) {
@@ -16,6 +22,8 @@ export class LoginPage extends Component{
 
    handleChange(event) {
     this.setState({username: event.target.value});
+    console.log(this.state.username)
+
   }
 
    handleChangePassword(event) {
@@ -31,6 +39,9 @@ export class LoginPage extends Component{
     login(this.state.username, this.state.password);
     if(store.getState().token != null){
       this.props.setLoggedIn()
+      localStorage.setItem('username', this.state.username);
+      localStorage.setItem('password', this.state.password);
+      localStorage.setItem('loggedIn', true)
     }
     event.preventDefault();
   }
@@ -44,21 +55,22 @@ export class LoginPage extends Component{
   render() {
     return (
       <div>
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Name:
-          <input type="text" value={this.state.username} onChange={this.handleChange} />
-        </label>
-        <label>
-          Password:
-          <input type="text" value={this.state.password} onChange={this.handleChangePassword} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
 
-      <div>
-        <button onClick={this.createNewAccount}>Create a New Account</button>
-      </div>
+    
+    <br />
+    <TextField value={this.state.username} onChange={this.handleChange} 
+      hintText="Username" style={style}
+    />
+    <br />
+    <br />
+    <TextField
+      hintText="Password" value={this.state.password} onChange={this.handleChangePassword}
+    style={style}/>
+    <br />
+    <br />
+    <RaisedButton primary={true} label="Login" onClick={this.handleSubmit} style={style}/>
+
+
       </div>
     );
   }

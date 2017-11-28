@@ -3,6 +3,14 @@ import './App.css';
 import { login, getData } from './util/Auth.js';
 import store from './store';
 import { createAccount } from './util/Auth.js';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+
+
+const style = {
+  margin: 12,
+};
+
 
 export class createAccountPage extends Component{
   constructor(props) {
@@ -14,6 +22,7 @@ export class createAccountPage extends Component{
     this.handleChangeFacebookEmail = this.handleChangeFacebookEmail.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.create = this.create.bind(this);
+    this.goBack = this.goBack.bind(this);
   }
 
    handleChange(event) {
@@ -37,35 +46,42 @@ export class createAccountPage extends Component{
 
 
   create(){
-  createAccount(this.state.username, this.state.password, this.state.facebookEmail).then(function(response) {
+    createAccount(this.state.username, this.state.password, this.state.facebookEmail).then(function(response) {
       alert(response.data)
     })
     console.log('hi')
+    login(this.state.username, this.state.password);
+    localStorage.setItem('username', this.state.username);
+    localStorage.setItem('password', this.state.password);
+    localStorage.setItem('loggedIn', true)
+    this.props.setLoggedIn()
   }
 
+  goBack(){
+    this.props.setLoggedOut()
+
+  }
 
   render() {
     return (
       <div>
-      Create a new account here.
-      <form>
-        <label>
-          Name:
-          <input type="text" value={this.state.username} onChange={this.handleChange} />
-        </label>
-        <label>
-          Password:
-          <input type="text" value={this.state.password} onChange={this.handleChangePassword} />
-        </label>
-        <label>
-          Facebook Email:
-          <input type="text" value={this.state.facebookEmail} onChange={this.handleChangeFacebookEmail} />
-        </label>
-      </form>
 
-      <div>
-        <button onClick={this.create}>Create</button>
-      </div>
+
+      <br />
+      <TextField value={this.state.username} onChange={this.handleChange} 
+        hintText="Username" style={style} />
+      <br />
+      <br />
+      <TextField
+        hintText="Password" value={this.state.password} onChange={this.handleChangePassword} style={style}/>
+      <br />
+      <br />
+      <TextField
+        hintText="Login Email for Facebook" value={this.state.facebookEmail} onChange={this.handleChangeFacebookEmail} style={style}/>
+      <br />
+      <br />
+      <RaisedButton label="Back To Login"  style={style} onClick={this.goBack} />
+      <RaisedButton primary={true} label="Create" onClick={this.create}/>
       </div>
     );
   }
