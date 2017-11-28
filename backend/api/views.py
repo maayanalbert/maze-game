@@ -51,11 +51,12 @@ def get_logs(request):
     userID = user.id
     profile = Profile.objects.get(user_id = userID)
     allLogs = profile.log_set.all()
-    output = ()
+    output = []
     for currentLog in allLogs:
         currentLogTime = currentLog.log_time
         currentLogFriends = currentLog.friends_online
-        output += (currentLogTime, currentLogFriends)
+        output.append((currentLogTime, currentLogFriends))
+    output = tuple(output)
 
     return Response({output})
 

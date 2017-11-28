@@ -22,7 +22,7 @@ const styles = {
 export class WelcomePage extends Component{
   constructor(props) {
     super(props);
-    this.state = {fbpassword: '', logs: 0};
+    this.state = {fbpassword: '', logs: []};
 
     this.logout = this.logout.bind(this);
     this.handleSetPassword = this.handleSetPassword.bind(this);
@@ -82,11 +82,19 @@ export class WelcomePage extends Component{
   }
 
   upDateLogs(){
-    this.setState({logs: 1})
     getLogs().then(function(response) {
+      localStorage.setItem('logs', response.data)
       this.setState({logs: response.data})
-    })
+    }.bind(this))
     console.log(this.state.logs)
+    // console.log(localStorage.getItem('logs').length)
+    // for(var i = 0; i < localStorage.getItem('logs').length; i+=2){
+    //     var date = localStorage.getItem('logs')[i]
+    //     var friends = localStorage.getItem('logs')[i + 1]
+    //     tempLogs.push((date, friends))   
+    // }
+    // this.setState({logs: tempLogs})
+    // console.log(this.state.logs)
   }
 
   render() {
@@ -94,7 +102,7 @@ export class WelcomePage extends Component{
       <div>
       <br />
       {this.renderContent()}
-      <ReactInterval timeout={240000} enabled={eval(localStorage.getItem('tracking'))}
+      <ReactInterval timeout={240} enabled={eval(localStorage.getItem('tracking'))}
         callback={this.upDateLogs} />
       </div>
     );
