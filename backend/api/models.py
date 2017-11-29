@@ -32,9 +32,10 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # username = models.CharField(max_length=200)
     # password = models.CharField(max_length=200)
+    start_day = models.IntegerField(default=0)
     facebook_email = models.CharField(max_length=200)
-    interval_time = models.IntegerField(default=240)
-    total_time = models.IntegerField(default=72000)
+    interval_time = models.IntegerField(default=300)
+    total_time = models.IntegerField(default=302400)
     def __str__(self):
         return self.user.username
     def testFunction(self):

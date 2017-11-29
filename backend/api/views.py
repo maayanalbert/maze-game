@@ -11,6 +11,9 @@ from django.http import HttpResponse
 from .models import Profile, Log
 from django.contrib.auth.models import User
 
+import time
+from datetime import date
+
 @api_view(['GET'])
 def get_data(request):
     # do something to fetch token
@@ -39,13 +42,14 @@ def start_tracking(request):
     user = User.objects.get(username = username)
     userID = user.id
     profile = Profile.objects.get(user_id = userID)
+    profile.start_day = date.weekday(date.today())
+    profile.save()
     profile.runScraper(fbpassword)
     return Response({'Started Tracking'})
 
 @api_view(['GET','POST'])
 def get_logs(request):
     info = request.data
-    print(info)
     username = info['username']
     user = User.objects.get(username = username)
     userID = user.id
@@ -58,7 +62,7 @@ def get_logs(request):
         output.append((currentLogTime, currentLogFriends))
     output = tuple(output)
 
-    return Response({output})
+    return Response({'logs': output, 'startDay': profile.start_day})
 
 # def LoginPage(request):
 #     username = request.POST.get('username')
