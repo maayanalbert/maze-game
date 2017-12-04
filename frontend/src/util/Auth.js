@@ -86,7 +86,7 @@ export function login(username, password) {
       store.dispatch(setToken(response.data.token));
     })
     .catch(function (error) {
-      alert("You have entered an incorrect username or password.")
+      //alert("You have entered an incorrect username or password.")
       // raise different exception if due to invalid credentials
       if (_.get(error, 'response.status') === 400) {
         throw new InvalidCredentialsException(error);

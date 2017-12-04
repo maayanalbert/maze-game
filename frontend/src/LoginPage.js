@@ -7,6 +7,7 @@ import { login, getData } from './util/Auth.js';
 import store from './store';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import PasswordField from 'material-ui-password-field'
 
 const style = {
   margin: 12,
@@ -66,7 +67,7 @@ export class LoginPage extends Component{
           hintText="Username" style={style} />
         <br />
         <br />
-        <TextField 
+        <PasswordField
           hintText="Password" value={this.state.password} 
           onChange={this.handleChangePassword} style={style}/>
         <br />

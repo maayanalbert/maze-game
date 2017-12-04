@@ -13,6 +13,7 @@ import { getLogs, stopTracking } from './util/Auth.js';
 import { Sketch } from './components/sketch';
 import Moment from 'moment';
 import 'moment-timezone';
+import PasswordField from 'material-ui-password-field'
 
 // the p5 sketch that visulizes the logs
 const sketch = (width, height, props) => {
@@ -284,7 +285,7 @@ export class WelcomePage extends Component{
   stop_Tracking(event) {
     localStorage.setItem('tracking', false)
     stopTracking()
-    this.setState({fbpassword: 'null'})
+    this.setState({fbpassword: ''})
   }
 
   // logs the user out
@@ -320,7 +321,7 @@ export class WelcomePage extends Component{
             not save it.
           </h2>
           <br />
-          <TextField
+          <PasswordField
             hintText="Facebook Password" value={this.state.fbpassword} 
             onChange={this.handleSetPassword}/>
           <br />
