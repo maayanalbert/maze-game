@@ -1,3 +1,6 @@
+
+// renders the view where you login
+
 import React, { Component } from 'react';
 import './App.css';
 import { login, getData } from './util/Auth.js';
@@ -20,22 +23,23 @@ export class LoginPage extends Component{
     this.createNewAccount = this.createNewAccount.bind(this);
   }
 
-   handleChange(event) {
+  //////////////////////////////////////
+  // saves the content in each text box as it's being written
+
+  handleChange(event) {
     this.setState({username: event.target.value});
     console.log(this.state.username)
-
   }
 
-   handleChangePassword(event) {
+  handleChangePassword(event) {
     this.setState({password: event.target.value});
   }
 
+  //////////////////////////////////////
+
+  // when the user submits, authenticates account by sending username and pass-
+  // word to the backend and save the account information in local storage 
   handleSubmit(event) {
-    // login(this.state.username, this.state.password).then(() => {
-    //   this.props.setLoggedIn();
-    // })
-    // alert('A username was submitted: ' + this.state.username + 
-    //   "\nA password was submitted: " + this.state.password);
     login(this.state.username, this.state.password);
     if(store.getState().token != null){
       this.props.setLoggedIn()
@@ -46,8 +50,9 @@ export class LoginPage extends Component{
     event.preventDefault();
   }
 
+  // logs in with a dummy account when switching to create account so user can
+  // access he database.
   createNewAccount(){
-    console.log()
     login('dummy', "dummypassword")
     this.props.createAccount()
   }
@@ -55,22 +60,19 @@ export class LoginPage extends Component{
   render() {
     return (
       <div>
-
-    
-    <br />
-    <TextField value={this.state.username} onChange={this.handleChange} 
-      hintText="Username" style={style}
-    />
-    <br />
-    <br />
-    <TextField
-      hintText="Password" value={this.state.password} onChange={this.handleChangePassword}
-    style={style}/>
-    <br />
-    <br />
-    <RaisedButton primary={true} label="Login" onClick={this.handleSubmit} style={style}/>
-
-
+        <br />
+        <TextField 
+          value={this.state.username} onChange={this.handleChange} 
+          hintText="Username" style={style} />
+        <br />
+        <br />
+        <TextField 
+          hintText="Password" value={this.state.password} 
+          onChange={this.handleChangePassword} style={style}/>
+        <br />
+        <br />
+        <RaisedButton primary={true} label="Login" onClick={this.handleSubmit} 
+          style={style}/>
       </div>
     );
   }

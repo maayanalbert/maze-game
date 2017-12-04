@@ -1,3 +1,6 @@
+
+# database models
+
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -19,30 +22,34 @@ import time
 from datetime import datetime
 from selenium import webdriver
 
+# Django comes with built in user models. However, the information you can store
+# in them is limited. To add more information, I created a profile model that
+# updates with the user model and contains additional relevant properties.
 
+# Update profile models with user models.
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
-# for user in User.objects.all():
-#     Token.objects.get_or_create(user=user)
 
+# Profile model
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # username = models.CharField(max_length=200)
-    # password = models.CharField(max_length=200)
     start_day = models.IntegerField(default=0)
     facebook_email = models.CharField(max_length=200)
     interval_time = models.IntegerField(default=300)
     total_time = models.IntegerField(default=302400)
+    tracking = models.BooleanField(default=False)
     def __str__(self):
         return self.user.username
     def testFunction(self):
         return "hi"
+
+    # A scraper that count the number of friends one has online. 
+    # From https://github.com/bhamodi/facebook-online-friend-tracker
     def runScraper(self, facebook_password):
         # Compute total number of iterations and initialize iteration counter.
-        number_of_iterations = 144000 / self.interval_time
         iteration = 0
 
         # Initialize Chrome WebDriver.
@@ -61,7 +68,6 @@ class Profile(models.Model):
         passwordBox = driver.find_element_by_id('pass')
         passwordBox.send_keys(facebook_password)
         driver.find_element_by_id('loginbutton').click()
-        print('number of iterations =' + str(number_of_iterations))
         while iteration < number_of_iterations:
             # Wait for Facebook to update the number of online friends.
             print('\nWaiting for Facebook to update friends list... (This takes approximately 3 minutes.)')
@@ -73,14 +79,17 @@ class Profile(models.Model):
                 onlineFriendsCount = int(onlineFriendsCount)
             else:
                 onlineFriendsCount = 0
-                print('Done! Detected ' + str(onlineFriendsCount) + ' online friends.')
+                print('Done! Detected ' + str(onlineFriendsCount) + 
+                    ' online friends.')
 
             # Get current time.
             today = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
             # Add a log
-            self.log_set.create(log_time = today, friends_online = onlineFriendsCount)
-            print('Added: ' + today + ' -> ' + str(onlineFriendsCount) + ' as a log.')
+            self.log_set.create(log_time = today, 
+                friends_online = onlineFriendsCount)
+            print('Added: ' + today + ' -> ' + str(onlineFriendsCount) + 
+                ' as a log.')
 
             # Wait for next interval and increment iteration counter.
             time.sleep(self.interval_time - 180)
@@ -89,17 +98,11 @@ class Profile(models.Model):
         # Close Chrome WebDriver.
         driver.quit()
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
+# The log model that stores how many friends have been online when.
 class Log(models.Model):
+    # Maps log to the correct profile. 
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, default=None)
+
     log_time = models.DateTimeField('time logged')
     friends_online = models.IntegerField(default=0)
 

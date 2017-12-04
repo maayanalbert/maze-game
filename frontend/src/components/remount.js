@@ -1,3 +1,8 @@
+
+// Correctly mounts p5 canvas on react. 
+// Taken from https://github.com/NeroCor/react-p5-wrapper
+
+
 import { Component } from 'react';
 
 import { debounce } from 'lodash';
@@ -11,41 +16,6 @@ export class RemountOnResize extends Component {
             resizing: true,
             isPortrait: window.innerHeight > window.innerWidth
         };
-
-        // On certain mobile devices, the software keyboard
-        // triggers a resize event. In that case, we do not
-        // want to trigger the remount. Instead, we want
-        // to trigger a resize only when switching between
-        // portrait and landscape modes.
-        // This assumes the keyboard does not take up more
-        // than half of the screen, which is not always
-        // true but it's a decent enough hack.
-        // const resize = isMobile ? (
-        //     () => {
-        //         let isPortrait = window.innerHeight > window.innerWidth;
-        //         if (isPortrait !== this.state.isPortrait || !this.state.resizing) {
-        //             this.setState({
-        //                 resizing: true,
-        //                 isPortrait
-        //             });
-        //         }
-        //     }
-        // ) : (
-        //     () => {
-        //         if (!this.state.resizing) {
-        //             this.setState({
-        //                 resizing: true
-        //             });
-        //         }
-        //     }
-        // );
-
-        // Because the resize event can fire very often when
-        // dragging a window, we add a debouncer to minimise
-        // pointlessly unmounting, remounting and resizing
-        // of the child nodes, with 200 ms as the default
-        // let delay = props.delay !== undefined ? props.delay : 200;
-        // this.setResize = debounce(resize, delay);
     }
 
     componentDidMount() {
@@ -55,7 +25,6 @@ export class RemountOnResize extends Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.setResize);
-        // this.setResize.cancel();
     }
 
     componentWillReceiveProps(nextProps) {

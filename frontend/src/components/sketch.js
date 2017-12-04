@@ -1,3 +1,7 @@
+
+// Adjusts elements of p5 to fit into react.
+// Taken from https://github.com/NeroCor/react-p5-wrapper
+
 import React, { PureComponent } from 'react';
 
 import { RemountOnResize } from './remount';

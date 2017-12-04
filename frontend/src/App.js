@@ -1,10 +1,13 @@
+
+// Manage the pages and render the app.
+
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import LoginPage from './LoginPage.js';
 import WelcomePage from './WelcomePage.js';
 import CreateAccountPage from './CreateAccountPage.js';
-import { login, getData } from './util/Auth.js';
+import { login, checkTracking } from './util/Auth.js';
 import store from './store';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -15,6 +18,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {pageDisplayed: 'login'};
+
     this.setLoginPageActive = this.setLoginPageActive.bind(this);
     this.setWelcomePageActive = this.setWelcomePageActive.bind(this);
     this.setCreateAccountPageActive = this.setCreateAccountPageActive.bind(this);
@@ -22,12 +26,14 @@ class App extends Component {
     this.logout = this.logout.bind(this);
   }
 
+  /////////////////////////////////////
+  // Sets the correct page to be active when said functions are called.
+
   setLoginPageActive() {
     this.setState({pageDisplayed: 'login'})
   }
 
   setWelcomePageActive() {
-    console.log('hi')
     this.setState({pageDisplayed: 'loggedIn'})
   }
 
@@ -35,50 +41,67 @@ class App extends Component {
     this.setState({pageDisplayed: 'createAccount'})
   }
 
+  ////////////////////////////////////
+
+  // Selects what page to render.
   renderPage(){
+
+    // If localStorage doesn't have a value for loggedIn (ie site is being 
+    // visited for the first time), set it to false.
     if(localStorage.getItem('loggedIn') == null){
       localStorage.setItem('loggedIn', false)
     }
-    if(localStorage.getItem('tracking') == null){
-      localStorage.setItem('tracking', false)
-    }
+
+    // Check whether we are logged in or not
     var status = eval(localStorage.getItem('loggedIn'))
-    console.log(status)
+
+    // If yes, automatically authenticate ourselves and render the welcomePage
     if(status == true){
       if(this.state.pageDisplayed != 'loggedIn'){
-      console.log('hello')
       login(localStorage.getItem('username'), localStorage.getItem('password'));
       this.setState({pageDisplayed: 'loggedIn'})
       }
     }
+
+    // Render the appropriate pages based on the current state.
     if(this.state.pageDisplayed == 'login'){
-          return <LoginPage setLoggedIn={this.setWelcomePageActive} 
+      return <LoginPage setLoggedIn={this.setWelcomePageActive} 
           createAccount ={this.setCreateAccountPageActive} />
     }else if(this.state.pageDisplayed == 'loggedIn'){
-          return <WelcomePage setLoggedOut={this.setLoginPageActive}/>
+      return <WelcomePage setLoggedOut={this.setLoginPageActive}/>
     }else{
-      return <CreateAccountPage setLoggedOut={this.setLoginPageActive} setLoggedIn={this.setWelcomePageActive}/>
+      return <CreateAccountPage setLoggedOut={this.setLoginPageActive} 
+        setLoggedIn={this.setWelcomePageActive}/>
     }
   }
 
+  // Set the state to that of the the createAccount page. In addition, login
+  // with a dummy account so that we can access the backend to add a user.
   createNewAccount(){
     login('dummy', "dummypassword")
     this.setState({pageDisplayed: 'createAccount'})
   }
 
+  // There are two header buttons; create account and login. If logged in,
+  // render the logout button, if not, render the create account button.
   renderHeaderButton(){
     if(this.state.pageDisplayed == 'login'){
-        return(<RaisedButton label="new account" primary={true} onClick={this.createNewAccount}></RaisedButton>)
+        return(<RaisedButton label="new account" primary={true} 
+          onClick={this.createNewAccount}></RaisedButton>)
     }else{
-        return(<RaisedButton label="logout" primary={true} onClick={this.logout}></RaisedButton>)
+        return(<RaisedButton label="logout" primary={true} 
+          onClick={this.logout}></RaisedButton>)
     }
   }
 
+  // When logging out, set the auth token to null and the account information
+  // stored in local storage to none as well.
   logout(){
     store.dispatch(setToken(null));
     localStorage.setItem('loggedIn', false)
     localStorage.setItem('username', null)
     localStorage.setItem('password', null)
+    localStorage.setItem('logs', null)
     this.setLoginPageActive()
   }
 
