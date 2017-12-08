@@ -1,4 +1,4 @@
-#!/Users/Maayan/ssuifinal2/env/bin/python
+#!/Users/Maayan/mazegame/env/bin/python
 
 import sys
 import getopt

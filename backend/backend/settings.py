@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from corsheaders.defaults import default_methods
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,21 +31,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-
-# Add token authentication
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    )
-}
-
 INSTALLED_APPS = [
     "api.apps.ApiConfig",
     'rest_framework',
-    'rest_framework.authtoken',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -116,10 +105,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
-    '127.0.0.1:3000',
-)
+ALLOWED_HOSTS = ['*']
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:3000',
+#     '127.0.0.1:3000',
+#     '127.0.0.1:8001',
+#     '127.0.0.1:8003',
+#     '128.237.185.151:8002',
+#     '128.237.185.151:8004',
+#     '128.237.223.180:8002',
+#     '128.237.223.180:8004',
+#     'file:///Users/Maayan/mazegame/client2/index.html',
+#     'file:///Users/Maayan/mazegame/client2/sketch.js',
+#     'http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.js',
+#     'https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.js'
+# )
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 

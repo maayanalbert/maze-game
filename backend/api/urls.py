@@ -7,14 +7,9 @@ from django.conf.urls import url
 
 from . import views
 
-from rest_framework.authtoken import views as drf_views
-
 
 urlpatterns = [
-    url(r'^auth$', drf_views.obtain_auth_token, name='auth'),
-    url(r'^newaccount', views.create_account),
-    url(r'^password', views.start_tracking),
-    url(r'^logs', views.get_logs),
-    url(r'^stopTracking', views.stop_tracking),
-    url(r'^checkTracking', views.check_tracking)
+    url(r'^redder', views.make_redder),
+    url(r'^lessred', views.make_less_red),
+    url(r'^red', views.get_red),
 ]
