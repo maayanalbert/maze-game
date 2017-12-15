@@ -28,23 +28,36 @@ from selenium import webdriver
 class Dot(models.Model):
     redColor = models.IntegerField(default=0)
 
-# from django.db import models
-# from django.contrib.postgres.fields import ArrayField
+class Game(models.Model):
+    playing = models.BooleanField(default=True)
+    over = models.BooleanField(default=False)
+    boardTemplateNum = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
+    def __str__(self):
+        return str(self.id)
 
-# class Game(models.Model):
-#     board = ArrayField(
-#         ArrayField(
-#             models.IntegerField(default = 1),
-#             size=8,
-#         ),
-#         size=8,
-#     )
-#     player_postion = ArrayField(models.IntegerField(default = 1),
-#             size=2,
-#         )
-#     player_direction = models.IntegerField(default = 0)
+class Board(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, default=None)
+    numRows = models.IntegerField(default=0)
+    numCols = models.IntegerField(default=0) 
+    beingSet = models.BooleanField(default=False)
 
+class Spot(models.Model):
+    board = models.ForeignKey(Board, on_delete=models.CASCADE, default=None)
+    xPos = models.IntegerField(default=0)
+    yPos = models.IntegerField(default=0)
+    filled = models.BooleanField(default=False)
 
+class Player(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, default=None) 
+    xPos = models.IntegerField(default=0)
+    yPos = models.IntegerField(default=0)
+    direction = models.IntegerField(default=0)
+
+class Goon(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, default=None) 
+    xPos = models.IntegerField(default=0)
+    yPos = models.IntegerField(default=0) 
 
 
 
